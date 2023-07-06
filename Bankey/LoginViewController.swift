@@ -44,7 +44,7 @@ extension LoginViewController {
         titleLabel.textColor = .black
         
         subLabel.translatesAutoresizingMaskIntoConstraints = false
-        subLabel.text = "Your premium source for all things banking"
+        subLabel.text = "Your premium source for all \nthings banking!"
         subLabel.numberOfLines = 0
         subLabel.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         subLabel.textAlignment = .center
@@ -82,7 +82,7 @@ extension LoginViewController {
         
         //Subtitle
         NSLayoutConstraint.activate([
-            subLabel.topAnchor.constraint(equalToSystemSpacingBelow: titleLabel.bottomAnchor, multiplier: 8),
+            subLabel.topAnchor.constraint(equalToSystemSpacingBelow: titleLabel.bottomAnchor, multiplier: 4),
             subLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
