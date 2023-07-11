@@ -11,18 +11,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
+   
+    let loginViewController = LoginViewController()
+    let onboardingContainerViewController = OnboardingContainerViewController()
+    let dummyViewController = DummyViewController()
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-        let vc = OnboardingContainerViewController()
-        let nav = UINavigationController(rootViewController: vc)
+        
+        loginViewController.delegate = self
+        onboardingContainerViewController.delegate = self
+        dummyViewController.logoutDelegate = self
+        
+        let nav = UINavigationController(rootViewController: loginViewController)
         window.rootViewController = nav
         window.makeKeyAndVisible()
         self.window = window 
     }
-
+    
+   
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
@@ -53,4 +61,41 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 }
+
+extension SceneDelegate : LoginViewControllerDelegate, OnboardingContainerViewControllerDelegate, LogoutDelegate {
+    func didLogout() {
+        setRootViewControler(loginViewController)
+    }
+    
+    func didFinishOnboarding() {
+        LocalState.hasOnboarded = true
+        setRootViewControler(dummyViewController)
+    }
+    
+    func didLogIn() {
+        if LocalState.hasOnboarded {
+            setRootViewControler(dummyViewController)
+        }else {
+            setRootViewControler(onboardingContainerViewController)
+        }
+    }
+
+    
+}
+
+//Transition for rootViewControllers
+extension SceneDelegate {
+    func setRootViewControler (_ vc: UIViewController, animated: Bool = true) {
+        guard animated, let window = self.window else {
+            self.window?.rootViewController = vc
+            self.window?.makeKeyAndVisible()
+            return
+        }
+        
+        window.rootViewController = vc
+        window.makeKeyAndVisible()
+        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve , animations: nil)
+    }
+}
+
 
